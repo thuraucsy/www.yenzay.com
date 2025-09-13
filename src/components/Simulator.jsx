@@ -90,13 +90,24 @@ export default function Simulator() {
 
     return (
         <Box sx={{
-            height: 600,
+            minHeight: { xs: "auto", md: "400px" },
             textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 2,
         }}>
-            <FormControl sx={{ border: "1px dotted", padding: 3, borderRadius: 5 }}>
-                <FormLabel>Preferred Method</FormLabel>
+            <FormControl sx={{
+                border: "1px dotted",
+                padding: { xs: 2, md: 3 },
+                borderRadius: 5,
+                maxWidth: "600px",
+                width: "100%"
+            }}>
+                <FormLabel sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}>Preferred Method</FormLabel>
                 <RadioGroup
                     row
+                    sx={{ justifyContent: "center" }}
                 >
                     <FormControlLabel value="y2k" checked={yData.simulator.preferMethod === "y2k"} onChange={preferMethodChange} control={<Radio />} label="¥ ➡︎ K" />
                     <FormControlLabel value="k2y" checked={yData.simulator.preferMethod === "k2y"} onChange={preferMethodChange} control={<Radio />} label="K ➡︎ ¥" />
@@ -134,7 +145,7 @@ export default function Simulator() {
                         }
                     }} />
 
-                    <FormLabel sx={{ pt: 3 }}>Handling Charges</FormLabel>
+                    <FormLabel sx={{ pt: 3, fontSize: { xs: "1rem", md: "1.2rem" } }}>Handling Charges</FormLabel>
                     <FormControlLabel control={<Checkbox checked={yData.simulator.atmFeeCheck ? true : false} />} label={`ATM fee ${handlingChargesLabel("atm")}`} onChange={
                         (event) => {
                             setLocalStorageYData(yData, setYData, "simulator.atmFeeCheck", event.target.checked);
@@ -142,7 +153,7 @@ export default function Simulator() {
                         }
                     } />
 
-                    <RadioGroup row sx={{ pl: 3 }} value={yData.simulator.atmType ? yData.simulator.atmType : "lawson"} onChange={
+                    <RadioGroup row sx={{ pl: 3, justifyContent: "center" }} value={yData.simulator.atmType ? yData.simulator.atmType : "lawson"} onChange={
                         (event) => {
                             setLocalStorageYData(yData, setYData, "simulator.atmType", event.target.value);
                             updateY2KorK2Ychanges(yData.simulator.preferMethod);
@@ -159,7 +170,7 @@ export default function Simulator() {
                         }
                     } />
 
-                    <Alert severity="warning">Min. transfer amount must be from ¥2,000 <Link href="/sbi_pricing2.jpg" target="_blank">Check SBI Pricing Detail</Link>
+                    <Alert severity="warning" sx={{ mt: 2 }}>Min. transfer amount must be from ¥2,000 <Link href="/sbi_pricing2.jpg" target="_blank">Check SBI Pricing Detail</Link>
                     </Alert>
                 </FormGroup>
             </FormControl>

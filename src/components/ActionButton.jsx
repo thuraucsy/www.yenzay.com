@@ -21,7 +21,7 @@ function ButtonField(props) {
 
     return (
 
-        <IconButton style={styles.actionButton}
+        <IconButton sx={styles.actionButton}
             variant="outlined"
             id={id}
             disabled={disabled}
@@ -37,7 +37,7 @@ function ButtonField(props) {
                 }
             }}
         >
-            <EventTwoTone style={styles.svgButton} />
+            <EventTwoTone sx={styles.svgButton} />
         </IconButton>
     );
 }
@@ -71,46 +71,46 @@ export default function ActionButton({ color, icon, label, path }) {
     const { calendarValue, setBtnType, yData, setYData } = useApp();
 
     return (
-        <Box style={styles.actions}>
-            <Box style={styles.actionButtonGroup}>
+        <Box sx={styles.actions}>
+            <Box sx={styles.actionButtonGroup}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <ButtonDatePicker />
                 </LocalizationProvider>
-                <Typography style={styles.text.actionText}>
+                <Typography sx={styles.text.actionText}>
                     {calendarValue == null ? "Calendar" : calendarValue.format('MM/DD')}
                 </Typography>
             </Box>
 
-            <Box style={styles.actionButtonGroup}>
-                <IconButton style={{ ...styles.actionButton, ...styles.actionButton.color.scan }} onClick={() => {
+            <Box sx={styles.actionButtonGroup}>
+                <IconButton sx={{ ...styles.actionButton, ...styles.actionButton.color.scan }} onClick={() => {
                     setBtnType("simulator");
                     setLocalStorageYData(yData, setYData, "btnType", "simulator");
                 }}>
-                    <CalculateTwoTone style={styles.svgButton} />
+                    <CalculateTwoTone sx={styles.svgButton} />
                 </IconButton>
-                <Typography style={styles.text.actionText}>
+                <Typography sx={styles.text.actionText}>
                     Simulator
                 </Typography>
             </Box>
-            <Box style={styles.actionButtonGroup}>
-                <IconButton style={{ ...styles.actionButton, ...styles.actionButton.color.rate }} onClick={() => {
+            <Box sx={styles.actionButtonGroup}>
+                <IconButton sx={{ ...styles.actionButton, ...styles.actionButton.color.rate }} onClick={() => {
                     setBtnType("chart");
                     setLocalStorageYData(yData, setYData, "btnType", "chart");
                 }}>
-                    <TimelineTwoTone style={styles.svgButton} />
+                    <TimelineTwoTone sx={styles.svgButton} />
                 </IconButton>
-                <Typography style={styles.text.actionText}>
+                <Typography sx={styles.text.actionText}>
                     Chart
                 </Typography>
             </Box>
-            <Box style={styles.actionButtonGroup}>
-                <IconButton style={styles.actionButton} onClick={() => {
+            <Box sx={styles.actionButtonGroup}>
+                <IconButton sx={styles.actionButton} onClick={() => {
                     setBtnType("fxRate");
                     setLocalStorageYData(yData, setYData, "btnType", "fxRate");
                 }}>
-                    <CurrencyExchangeTwoTone style={styles.svgButton} />
+                    <CurrencyExchangeTwoTone sx={styles.svgButton} />
                 </IconButton>
-                <Typography style={styles.text.actionText}>
+                <Typography sx={styles.text.actionText}>
                     Fx Rate
                 </Typography>
             </Box>
@@ -121,9 +121,11 @@ export default function ActionButton({ color, icon, label, path }) {
 const styles = {
     actions: {
         display: "flex",
-        padding: 30,
+        padding: { xs: 2, md: 4 },
         flexDirection: "row",
         justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 2,
     },
     action: {
         justifyContent: "center",
@@ -133,33 +135,39 @@ const styles = {
     actionButtonGroup: {
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
-    },
-    actionButton: {
-        width: 68,
-        height: 68,
-        borderRadius: 68,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgb(255, 0, 157)",
+        gap: 1,
+    },
+    actionButton: {
+        width: { xs: 60, md: 80 },
+        height: { xs: 60, md: 80 },
+        borderRadius: { xs: 60, md: 80 },
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#475569", // Professional slate gray
         color: {
             scan: {
-                backgroundColor: "rgb(14, 156, 226)",
+                backgroundColor: "#64748b", // Lighter slate
             },
             rate: {
-                backgroundColor: "rgb(244 72 72)",
+                backgroundColor: "#374151", // Matching the banner color
             }
-        }
+        },
+        "&:hover": {
+            opacity: 0.8,
+        },
     },
     svgButton: {
         color: "white",
-        fontSize: "1.8rem",
+        fontSize: { xs: "1.5rem", md: "2rem" },
     },
     text: {
         actionText: {
             color: "#fff",
             textAlign: "center",
-            paddingTop: 4,
+            paddingTop: 1,
+            fontSize: { xs: "0.8rem", md: "1rem" },
         },
     },
 };

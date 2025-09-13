@@ -19,20 +19,19 @@ function CalculatedResult({ yItem, yData }) {
 
     if (yData.simulator.preferMethod === "y2k") {
         return (
-            <Box style={styles.balance}>
-                <Typography style={styles.text.label}>K</Typography>
-                <Typography style={styles.text.amount}>{yItem ? getCurrencyFormatter(Math.floor((Number(yData.simulator.y2k.value - handlingFee) * Number(yItem.MMKRatePerYen)))) : ""}</Typography>
-                <Typography style={styles.text.label}>/&nbsp;&nbsp;¥{yItem ? getCurrencyFormatter(yData.simulator.y2k.value) : ""}</Typography>
+            <Box sx={styles.balance}>
+                <Typography sx={styles.text.label}>K</Typography>
+                <Typography sx={styles.text.amount}>{yItem ? getCurrencyFormatter(Math.floor((Number(yData.simulator.y2k.value - handlingFee) * Number(yItem.MMKRatePerYen)))) : ""}</Typography>
+                <Typography sx={styles.text.label}>/&nbsp;&nbsp;¥{yItem ? getCurrencyFormatter(yData.simulator.y2k.value) : ""}</Typography>
             </Box>
-        );    
+        );
     }
 
-
     return (
-        <Box style={styles.balance}>
-            <Typography style={styles.text.label}>¥</Typography>
-            <Typography style={styles.text.amount}>{yItem ? getCurrencyFormatter(Math.ceil((Number(yData.simulator.k2y.value) / Number(yItem.MMKRatePerYen))) + handlingFee) : ""}</Typography>
-            <Typography style={styles.text.label}>/&nbsp;&nbsp;K{yItem ? getCurrencyFormatter(yData.simulator.k2y.value) : ""}</Typography>
+        <Box sx={styles.balance}>
+            <Typography sx={styles.text.label}>¥</Typography>
+            <Typography sx={styles.text.amount}>{yItem ? getCurrencyFormatter(Math.ceil((Number(yData.simulator.k2y.value) / Number(yItem.MMKRatePerYen))) + handlingFee) : ""}</Typography>
+            <Typography sx={styles.text.label}>/&nbsp;&nbsp;K{yItem ? getCurrencyFormatter(yData.simulator.k2y.value) : ""}</Typography>
         </Box>
     );
 }
@@ -64,15 +63,16 @@ export default function SimulationResult() {
     }
 
     return (
-        <Box style={styles.banner}>
-            <Box>
-                <Typography style={styles.text.label}>Simulation Result {handlingChargesLabel()}</Typography>
+        <Box sx={styles.banner}>
+            <Box sx={styles.bannerContent}>
+                <Typography sx={styles.text.label}>Simulation Result {handlingChargesLabel()}</Typography>
 
                 <CalculatedResult yItem={yItem} yData={yData} />
                 <Typography sx={{
                     fontWeight: "bold",
                     fontStyle: "italic",
-                    color: "#f5dbdb"
+                    color: "#f5dbdb",
+                    fontSize: { xs: "0.8rem", md: "1rem" }
                 }}>{yItem.YearMonth}/{yItem.DayTime} ({yItem.MMKRatePerYen})</Typography>
             </Box>
             {/* <Box style={styles.yenOrGold}>
@@ -86,21 +86,25 @@ const styles = {
     banner: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
-        padding: 30,
-        borderBottomLeftRadius: 25,
-        borderBottomRightRadius: 25,
-        backgroundColor: "rgb(244, 72, 72)",
+        justifyContent: "center",
+        padding: { xs: 2, md: 4 },
+        borderBottomLeftRadius: { xs: 25, md: 50 },
+        borderBottomRightRadius: { xs: 25, md: 50 },
+        backgroundColor: "#374151", // Professional dark gray that complements the slate theme
         position: "sticky",
         top: -1,
         zIndex: 10,
     },
+    bannerContent: {
+        textAlign: "center",
+    },
     balance: {
-        marginTop: 12,
+        marginTop: 2,
         flexDirection: "row",
-        gap: 10,
+        gap: 1,
         alignItems: "center",
         display: "flex",
+        justifyContent: "center",
     },
     yenOrGold: {
         alignItems: "flex-end",
@@ -109,10 +113,11 @@ const styles = {
         label: {
             fontWeight: "bold",
             color: "#f5dbdb",
+            fontSize: { xs: "1rem", md: "1.2rem" },
         },
         amount: {
             fontWeight: "bold",
-            fontSize: 35,
+            fontSize: { xs: 28, md: 40 },
             color: "#fff",
         },
         growth: {

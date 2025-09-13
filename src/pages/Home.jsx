@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 import SimulationResult from "../components/SimulationResult";
 import ActionButton from "../components/ActionButton";
@@ -22,37 +22,58 @@ function SelectedItem() {
 
 export default function Home() {
 	return (
-		<Box style={styles.container}>
-			<Box style={styles.background} />
-			<SimulationResult />
-			<Box>
-				<ActionButton />
-			</Box>
-			<Box style={styles.transactions}>
-				<SelectedItem />
-			</Box>
+		<Box sx={styles.container}>
+			<Box sx={styles.background} />
+			<Container maxWidth="lg" sx={styles.contentWrapper}>
+				<SimulationResult />
+				<Box sx={styles.actionWrapper}>
+					<ActionButton />
+				</Box>
+				<Box sx={styles.transactions}>
+					<SelectedItem />
+				</Box>
+			</Container>
 		</Box>
 	);
 }
 
-
 const styles = {
-	transactions: {
-		padding: 20,
-		gap: 10,
-		borderTopLeftRadius: 25,
-		borderTopRightRadius: 25,
-		backgroundColor: "#f1f1f1",
-	},
 	container: {
-		backgroundColor: "rgb(173 20 20)",
+		backgroundColor: "#1e293b", // Professional dark slate blue
+		minHeight: "100vh",
+		display: "flex",
+		flexDirection: "column",
 	},
 	background: {
 		position: "absolute",
 		left: 0,
 		right: 0,
-		top: 100,
-		height: 200,
+		top: 0,
+		height: { xs: 200, md: 300 },
 		backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0))`,
-	}
+		zIndex: 1,
+	},
+	contentWrapper: {
+		position: "relative",
+		zIndex: 2,
+		flex: 1,
+		display: "flex",
+		flexDirection: "column",
+		paddingTop: { xs: 2, md: 4 },
+		paddingBottom: { xs: 2, md: 4 },
+	},
+	actionWrapper: {
+		marginTop: 2,
+		marginBottom: 2,
+	},
+	transactions: {
+		flex: 1,
+		padding: { xs: 2, md: 4 },
+		borderTopLeftRadius: { xs: 25, md: 50 },
+		borderTopRightRadius: { xs: 25, md: 50 },
+		backgroundColor: "#f1f1f1",
+		display: "flex",
+		flexDirection: "column",
+		minHeight: { xs: "auto", md: "60vh" },
+	},
 };
