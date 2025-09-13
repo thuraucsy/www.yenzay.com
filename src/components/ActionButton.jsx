@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Tooltip } from "@mui/material";
 import { EventTwoTone, CalculateTwoTone, TimelineTwoTone, CurrencyExchangeTwoTone } from "@mui/icons-material";
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -20,25 +20,26 @@ function ButtonField(props) {
     } = props;
 
     return (
-
-        <IconButton sx={styles.actionButton}
-            variant="outlined"
-            id={id}
-            disabled={disabled}
-            ref={ref}
-            aria-label={ariaLabel}
-            onClick={() => {
-                /** only set the calendar type if not */
-                if (btnType != "calendar") {
-                    setBtnType("calendar");
-                    setLocalStorageYData(yData, setYData, "btnType", "calendar");
-                } else {
-                    setOpen?.((prev) => !prev)
-                }
-            }}
-        >
-            <EventTwoTone sx={styles.svgButton} />
-        </IconButton>
+        <Tooltip title={btnType === "calendar" ? "Tap to select previous dates" : "Tap to view calendar"} enterTouchDelay={0}>
+            <IconButton sx={{ ...styles.actionButton, ...(btnType === "calendar" ? { border: "2px solid #fff" } : {}) }}
+                variant="outlined"
+                id={id}
+                disabled={disabled}
+                ref={ref}
+                aria-label={ariaLabel}
+                onClick={() => {
+                    /** only set the calendar type if not */
+                    if (btnType != "calendar") {
+                        setBtnType("calendar");
+                        setLocalStorageYData(yData, setYData, "btnType", "calendar");
+                    } else {
+                        setOpen?.((prev) => !prev)
+                    }
+                }}
+            >
+                <EventTwoTone sx={styles.svgButton} />
+            </IconButton>
+        </Tooltip>
     );
 }
 
