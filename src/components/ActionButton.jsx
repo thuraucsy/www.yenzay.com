@@ -20,7 +20,7 @@ function ButtonField(props) {
     } = props;
 
     return (
-        <Tooltip title={btnType === "calendar" ? "Tap to select previous dates" : "Tap to view calendar"} enterTouchDelay={0}>
+        <Tooltip title={btnType === "calendar" ? "Tap again to select previous dates" : "Tap to view yenzay"} enterTouchDelay={0}>
             <IconButton sx={{ ...styles.actionButton, ...(btnType === "calendar" ? { border: "2px solid #fff" } : {}) }}
                 variant="outlined"
                 id={id}
