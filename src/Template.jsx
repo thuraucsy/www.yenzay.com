@@ -5,6 +5,7 @@ import { KeyboardArrowUp } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
 
 import { useApp } from "./ThemedApp";
+import Sidebar from "./components/Sidebar";
 
 function ScrollTop(props) {
     const { children } = props;
@@ -43,6 +44,7 @@ export default function Template() {
 
     return (
         <>
+            <Sidebar />
             <Box>
                 <div id="back-to-top-anchor" />
                 <Outlet />
