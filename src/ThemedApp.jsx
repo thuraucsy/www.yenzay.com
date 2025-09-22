@@ -69,6 +69,9 @@ export default function ThemedApp() {
 			atmFeeCheck: false,
 			remitFeeCheck: false,
 			atmType: "lawson",
+			goldWeight: 5, /** selected gold weight in grams */
+			goldDealer: 'tanaka', /** selected gold dealer */
+			goldHandlingFeeCheck: false, /** whether to include gold handling fees */
 			sbiPricingObj: {
 				"lawson": "",
 				"yucho": "",

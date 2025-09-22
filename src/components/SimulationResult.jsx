@@ -8,6 +8,75 @@ import { getCurrencyFormatter } from "../ThemedApp";
 const api = import.meta.env.VITE_YENZAY_API;
 
 function CalculatedResult({ yItem, yData }) {
+    if (yData.yenOrGoldToggle === 'gold') {
+        // Gold dealer options with fixed handling charges based on weight
+        // Tanaka Kikinzoku fees (from tt.tanaka.jp/guide/fee/):
+        // - 500g/1kg: ¥0
+        // - 100g/200g/300g: ¥16,500
+        // - 50g: ¥8,800
+        // - 5g/10g/20g: ¥4,400
+        // Nihon Material fees (from www.material.co.jp/charge.php):
+        // - 1kg/500g/300g/200g/100g: ¥0
+        // - 50g: ¥1,540
+        // - 20g<=: ¥2,420
+        const getGoldHandlingFee = (dealer, weight) => {
+            if (dealer === 'tanaka') {
+                if (weight >= 500) return 0; // 500g/1kg: free
+                if (weight >= 100) return 16500; // 100g/200g/300g: ¥16,500
+                if (weight >= 50) return 8800; // 50g: ¥8,800
+                return 4400; // 5g/10g/20g: ¥4,400
+            } else if (dealer === 'nihon') {
+                if (weight >= 100) return 0; // 100g+: free
+                if (weight <= 20) return 2420; // 20g and below: ¥2,420
+                return 1540; // 50g: ¥1,540
+            }
+            return 0;
+        };
+
+        // Calculate total gold price including handling charges
+        const calculateGoldPrice = () => {
+            if (!yItem || !yItem.GoldPriceYenPerGram || !yData.simulator.goldWeight) {
+                return 0;
+            }
+
+            const basePrice = yItem.GoldPriceYenPerGram * yData.simulator.goldWeight;
+
+            // Add handling charges if enabled
+            if (yData.simulator.goldHandlingFeeCheck && yData.simulator.goldDealer) {
+                const handlingFee = getGoldHandlingFee(yData.simulator.goldDealer, yData.simulator.goldWeight);
+                return basePrice + handlingFee;
+            }
+
+            return basePrice;
+        };
+
+        // Show gold price - either per gram or total based on selected weight
+        if (yData.simulator.goldWeight && yData.simulator.goldWeight > 1) {
+            // Show total price for selected weight
+            const totalPrice = calculateGoldPrice();
+            const weightLabel = yData.simulator.goldWeight >= 1000 ?
+                `${yData.simulator.goldWeight / 1000}kg` :
+                `${yData.simulator.goldWeight}g`;
+
+            return (
+                <Box sx={styles.balance}>
+                    <Typography sx={styles.text.label}>Gold Price</Typography>
+                    <Typography sx={styles.text.amount}>{yItem ? `¥${getCurrencyFormatter(totalPrice)}` : ""}</Typography>
+                    <Typography sx={styles.text.label}>/{weightLabel}</Typography>
+                </Box>
+            );
+        } else {
+            // Show per gram price
+            return (
+                <Box sx={styles.balance}>
+                    <Typography sx={styles.text.label}>Gold Price</Typography>
+                    <Typography sx={styles.text.amount}>{yItem ? `¥${getCurrencyFormatter(yItem.GoldPriceYenPerGram)}` : ""}</Typography>
+                    <Typography sx={styles.text.label}>/g</Typography>
+                </Box>
+            );
+        }
+    }
+
     let handlingFee = 0;
     if (yData.simulator.atmFeeCheck) {
         handlingFee += yData.simulator.sbiPricingObj[yData.simulator.atmType] ? Number(yData.simulator.sbiPricingObj[yData.simulator.atmType]) : 0;
@@ -60,12 +129,15 @@ export default function SimulationResult() {
         } else if (yData.simulator.remitFeeCheck) {
             return `(Incl. Remit fee)`;
         }
+        return '';
     }
 
     return (
         <Box sx={styles.banner}>
             <Box sx={styles.bannerContent}>
-                <Typography sx={styles.text.label}>Simulation Result {handlingChargesLabel()}</Typography>
+                <Typography sx={styles.text.label}>
+                    {yData.yenOrGoldToggle === 'gold' ? 'Gold Price' : `Simulation Result ${handlingChargesLabel()}`}
+                </Typography>
 
                 <CalculatedResult yItem={yItem} yData={yData} />
                 <Typography sx={{
@@ -73,11 +145,16 @@ export default function SimulationResult() {
                     fontStyle: "italic",
                     color: "#f5dbdb",
                     fontSize: { xs: "0.8rem", md: "1rem" }
-                }}>{yItem.YearMonth}/{yItem.DayTime} ({yItem.MMKRatePerYen})</Typography>
+                }}>
+                    {yData.yenOrGoldToggle === 'gold' 
+                        ? yItem.GoldPriceDateTime 
+                        : `${yItem.YearMonth}/${yItem.DayTime} (${yItem.MMKRatePerYen})`
+                    }
+                </Typography>
             </Box>
-            {/* <Box style={styles.yenOrGold}>
+            <Box style={styles.yenOrGold}>
                 <YenOrGoldButton />
-            </Box> */}
+            </Box>
         </Box>
     );
 }

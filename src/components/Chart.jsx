@@ -3,24 +3,35 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { getCurrencyFormatter, useApp } from "../ThemedApp";
 import { useQuery } from "react-query";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const api = import.meta.env.VITE_YENZAY_API;
 
 export default function Chart() {
-    const { calendarValue } = useApp();
+    const { calendarValue, yData } = useApp();
     const [period, setPeriod] = useState('thisMonth');
 
-    // Generate year options from current year to 2020
+    // Generate year options from current year to 2020 (or 2024 for gold)
     const currentYear = dayjs().year();
+    const minYear = yData.yenOrGoldToggle === 'gold' ? 2024 : 2020;
     const yearOptions = [];
-    for (let year = currentYear; year >= 2020; year--) {
+    for (let year = currentYear; year >= minYear; year--) {
         yearOptions.push({
             value: `year_${year}`,
             label: `${year} Year`,
             year: year
         });
     }
+
+    // Reset period if current selection is not available for gold mode
+    useEffect(() => {
+        if (yData.yenOrGoldToggle === 'gold' && period.startsWith('year_')) {
+            const selectedYear = parseInt(period.split('_')[1]);
+            if (selectedYear < 2024) {
+                setPeriod('thisMonth');
+            }
+        }
+    }, [yData.yenOrGoldToggle, period]);
 
     const { isLoading, isError, error, data } = useQuery(["yenzay_chart", period], async ({ queryKey }) => {
         const [_, selectedPeriod] = queryKey;
@@ -94,16 +105,18 @@ export default function Chart() {
                     if (data2['DayTime']) {
                         dateStr += '/' + data2['DayTime'];
                     }
-                    const rate = parseFloat(data2['MMKRatePerYen']);
+                    const rate = yData.yenOrGoldToggle === 'gold'
+                        ? parseFloat(data2['GoldPriceYenPerGram'])
+                        : parseFloat(data2['MMKRatePerYen']);
                     const parsedDate = dayjs(dateStr);
-                    if (parsedDate.isValid()) {
+                    if (parsedDate.isValid() && !isNaN(rate) && rate > 0) {
                         // For "Previous 30 Days", only include data from the last 30 days
                         if (period === 'thisMonth' && parsedDate.isBefore(thirtyDaysAgo)) {
                             continue;
                         }
                         dataPoints.push({
                             date: parsedDate,
-                            rate: getCurrencyFormatter(rate, 2)
+                            rate: rate
                         });
                     }
                 }
@@ -119,12 +132,14 @@ export default function Chart() {
                         if (data2['DayTime']) {
                             dateStr += '/' + data2['DayTime'];
                         }
-                        const rate = parseFloat(data2['MMKRatePerYen']);
+                        const rate = yData.yenOrGoldToggle === 'gold'
+                            ? parseFloat(data2['GoldPriceYenPerGram'])
+                            : parseFloat(data2['MMKRatePerYen']);
                         const parsedDate = dayjs(dateStr);
-                        if (parsedDate.isValid()) {
+                        if (parsedDate.isValid() && !isNaN(rate) && rate > 0) {
                             dataPoints.push({
                                 date: parsedDate,
-                                rate: getCurrencyFormatter(rate, 2)
+                                rate: rate
                             });
                         }
                     }
@@ -185,8 +200,8 @@ export default function Chart() {
                 }]}
                 series={[
                     {
-                        // data: [2, 5.5, 2, 8.5, 1.5, 5],
                         data: yAxis,
+                        valueFormatter: (value) => getCurrencyFormatter(value, 2),
                     },
                 ]}
                 height={300}

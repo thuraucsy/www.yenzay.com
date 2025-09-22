@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useApp, setLocalStorageYData } from '../ThemedApp';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -63,10 +64,22 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 export default function YenOrGoldButton() {
+  const { yData, setYData } = useApp();
+
+  const handleToggle = () => {
+    const newToggle = yData.yenOrGoldToggle === 'yen' ? 'gold' : 'yen';
+    setLocalStorageYData(yData, setYData, 'yenOrGoldToggle', newToggle);
+  };
+
   return (
     <FormGroup>
       <FormControlLabel
-        control={<MaterialUISwitch defaultChecked />}
+        control={
+          <MaterialUISwitch
+            checked={yData.yenOrGoldToggle === 'gold'}
+            onChange={handleToggle}
+          />
+        }
       />
     </FormGroup>
   );
